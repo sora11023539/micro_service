@@ -15,7 +15,7 @@ export const Book: React.FC = () => {
   }, []);
 
   const handlePost = (book: { title: string; url: string; comment: string }) => {
-    setBooks((prevBooks) => [...prevBooks, book]);
+    setBooks((prevBooks) => [book, ...prevBooks]);
   };
 
   return (
