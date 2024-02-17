@@ -1,61 +1,74 @@
 version: '3.8'
 
+x-mongdb-image: &mongodb-image
+  image: mongo:7.0-jammy
 x-mongodb-env: &mongodb-env
   MONGO_INITDB_ROOT_USERNAME: root
   MONGO_INITDB_ROOT_PASSWORD: password
 
 services:
-  frontend:
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   command: npm run dev
+  #   volumes:
+  #     - ./frontend:/app
+  #     - node_modules:/app/node_modules
+  #   ports:
+  #     - "5173:5173"
+  #   environment:
+  #     - VITE_TWEET_API_URL=http://localhost:3002
+
+  # book_api:
+  #   build:
+  #     context: ./book_api
+  #   command: bundle exec rails s -p 3000 -b '0.0.0.0'
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./book_api:/app
+  #     - book_bundle:/usr/local/bundle
+  #   depends_on:
+  #     - book_db
+  #   environment:
+  #     <<: *mongodb-env
+
+  tweet_api:
     build:
-      context: ./frontend
-    command: npm run dev
-    volumes:
-      - ./frontend:/app
-      - node_modules:/app/node_modules
+      context: ./tweet_api
+    command: bundle exec rails s -p 3001 -b '0.0.0.0'
     ports:
-      - "5173:5173"
+      - "3001:3001"
+    volumes:
+      - ./tweet_api:/app
+      - tweet_bundle:/usr/local/bundle
+    depends_on:
+      - tweet_db
     environment:
-      - VITE_TWEET_API_URL=http://localhost:3002
+      MONGODB_URI: mongodb://tweet_db:27018/tweet_db
+      <<: *mongodb-env
 
-#   book_api:
-#     build:
-#       context: ./book_api
-#     ports:
-#       - "3001:3001"
-#     depends_on:
-#       - book_db
-#     environment:
-#       <<: *mongodb-env
+  # book_db:
+  #   <<: *mongodb-image
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - book_db:/data/db
+  #   environment:
+  #     <<: *mongodb-env
 
-#   tweet_api:
-#     build:
-#       context: ./tweet_api
-#     ports:
-#       - "3002:3002"
-#     depends_on:
-#       - tweet_db
-#     environment:
-#       <<: *mongodb-env
-
-#   book_db:
-#     image: mongo:jammy
-#     ports:
-#       - "27017:27017"
-#     volumes:
-#       - ./book_db:/data/db
-#     environment:
-#       <<: *mongodb-env
-
-#   tweet_db:
-#     image: mongo:jammy
-#     ports:
-#       - "27018:27018"
-#     volumes:
-#       - ./tweet_db:/data/db
-#     environment:
-#       <<: *mongodb-env
+  tweet_db:
+    <<: *mongodb-image
+    ports:
+      - "27018:27018"
+    volumes:
+      - tweet_db:/data/db
+    environment:
+      <<: *mongodb-env
 
 volumes:
-  node_modules:
-#   book_db:
-#   tweet_db:
+  # node_modules:
+  # book_db:
+  # book_bundle:
+  tweet_bundle:
+  tweet_db:
