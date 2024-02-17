@@ -1,6 +1,6 @@
 class Api::V1::TweetsController < ApplicationController
   def index
-    render json: tweets
+    render json: tweets.order(created_at: :desc)
   end
 
   def create
