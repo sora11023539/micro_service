@@ -8,47 +8,52 @@ services:
   frontend:
     build:
       context: ./frontend
-    ports:
-      - "3000:3000"
-
-  book_api:
-    build:
-      context: ./book_api
-    ports:
-      - "3001:3001"
-    depends_on:
-      - book_db
-    environment:
-      <<: *mongodb-env
-
-  tweet_api:
-    build:
-      context: ./tweet_api
-    ports:
-      - "3002:3002"
-    depends_on:
-      - tweet_db
-    environment:
-      <<: *mongodb-env
-
-  book_db:
-    image: mongo:jammy
-    ports:
-      - "27017:27017"
+    command: npm run dev
     volumes:
-      - ./book_db:/data/db
-    environment:
-      <<: *mongodb-env
-
-  tweet_db:
-    image: mongo:jammy
+      - ./frontend:/app
+      - node_modules:/app/node_modules
     ports:
-      - "27018:27018"
-    volumes:
-      - ./tweet_db:/data/db
-    environment:
-      <<: *mongodb-env
+      - "5173:5173"
+
+#   book_api:
+#     build:
+#       context: ./book_api
+#     ports:
+#       - "3001:3001"
+#     depends_on:
+#       - book_db
+#     environment:
+#       <<: *mongodb-env
+
+#   tweet_api:
+#     build:
+#       context: ./tweet_api
+#     ports:
+#       - "3002:3002"
+#     depends_on:
+#       - tweet_db
+#     environment:
+#       <<: *mongodb-env
+
+#   book_db:
+#     image: mongo:jammy
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - ./book_db:/data/db
+#     environment:
+#       <<: *mongodb-env
+
+#   tweet_db:
+#     image: mongo:jammy
+#     ports:
+#       - "27018:27018"
+#     volumes:
+#       - ./tweet_db:/data/db
+#     environment:
+#       <<: *mongodb-env
 
 volumes:
-  book_db:
-  tweet_db:
+  node_modules:
+#   book_db:
+#   tweet_db:
