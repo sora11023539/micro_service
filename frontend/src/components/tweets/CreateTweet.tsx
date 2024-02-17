@@ -14,7 +14,7 @@ export const CreateTweet: React.FC = () => {
       body,
     };
 
-    await axios.post('http://localhost:3002/tweets', tweet);
+    await axios.post(`${import.meta.env.VITE_TWEET_API_URL}/tweets/`, tweet);
 
     setTitle('');
     setBody('');

@@ -13,7 +13,7 @@ export const TweetList: React.FC = () => {
 
   useEffect(() => {
     const fetchTweets = async () => {
-      const res = await axios.get<Tweet[]>('http://localhost:3002/tweets');
+      const res = await axios.get<Tweet[]>(`${import.meta.env.VITE_TWEET_API_URL}/tweets/`);
       setTweets(res.data);
     };
 
