@@ -26,6 +26,20 @@ services:
       - VITE_BOOK_API_URL=http://localhost:3000/api/v1
       - VITE_TWEET_API_URL=http://localhost:3001/api/v1
 
+  redis:
+    image: redis:7.2
+    ports:
+      - "6379:6379"
+
+  redis-ui:
+    image: redislabs/redisinsight:1.14.0
+    ports:
+      - 8001:8001
+    volumes:
+      - redis_ui_db:/db
+    depends_on:
+      - redis
+
   book_api:
     build:
       context: ./book_api
@@ -37,8 +51,10 @@ services:
       - book_bundle:/usr/local/bundle
     depends_on:
       - book_db
+      - redis
     environment:
       <<: *mongodb-env
+      REDIS_URL: redis://redis:6379/0
 
   book_db:
     <<: *mongodb-image
@@ -98,6 +114,7 @@ services:
 
 volumes:
   node_modules:
+  redis_ui_db:
   book_db:
   book_bundle:
   # tweet_bundle:

@@ -5,12 +5,19 @@ class Api::V1::BooksController < ApplicationController
 
   def create
     Book.create!(book_params)
+    $redis.del('books')
   end
 
   private
 
   def books
-    @books ||= Book.all
+    @books ||= $redis.get('books') || fetch_books
+  end
+
+  def fetch_books
+    books = Book.all.to_json
+    $redis.set('books', books)
+    books
   end
 
   def book_params
