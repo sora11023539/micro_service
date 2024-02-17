@@ -75,47 +75,47 @@ services:
     depends_on:
       - book_db
 
-  # tweet_api:
-  #   build:
-  #     context: ./tweet_api
-  #   command: bundle exec rails s -p 3001 -b '0.0.0.0'
-  #   tty: true
-  #   stdin_open: true
-  #   ports:
-  #     - "3001:3001"
-  #   volumes:
-  #     - ./tweet_api:/app
-  #     - tweet_bundle:/usr/local/bundle
-  #   depends_on:
-  #     - tweet_db
-  #   environment:
-  #     <<: *mongodb-env
+  tweet_api:
+    build:
+      context: ./tweet_api
+    command: bundle exec rails s -p 3001 -b '0.0.0.0'
+    tty: true
+    stdin_open: true
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./tweet_api:/app
+      - tweet_bundle:/usr/local/bundle
+    depends_on:
+      - tweet_db
+    environment:
+      <<: *mongodb-env
 
-  # tweet_db:
-  #   <<: *mongodb-image
-  #   command: mongod --port 27018
-  #   ports:
-  #     - "27018:27018"
-  #   volumes:
-  #     - tweet_db:/data/db
-  #   environment:
-  #     <<: *mongodb-env
+  tweet_db:
+    <<: *mongodb-image
+    command: mongod --port 27018
+    ports:
+      - "27018:27018"
+    volumes:
+      - tweet_db:/data/db
+    environment:
+      <<: *mongodb-env
 
-  # tweet_db_ui:
-  #   <<: *mongo-express-image
-  #   ports:
-  #     - "8082:8082"
-  #   environment:
-  #     <<: *mongo-express-env
-  #     ME_CONFIG_MONGODB_SERVER: tweet_db
-  #     ME_CONFIG_MONGODB_PORT: 27018
-  #   depends_on:
-  #     - tweet_db
+  tweet_db_ui:
+    <<: *mongo-express-image
+    ports:
+      - "8082:8082"
+    environment:
+      <<: *mongo-express-env
+      ME_CONFIG_MONGODB_SERVER: tweet_db
+      ME_CONFIG_MONGODB_PORT: 27018
+    depends_on:
+      - tweet_db
 
 volumes:
   node_modules:
   redis_ui_db:
   book_db:
   book_bundle:
-  # tweet_bundle:
-  # tweet_db:
+  tweet_bundle:
+  tweet_db:

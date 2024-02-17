@@ -1,10 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { App } from './App.tsx';
+import { createRoot } from 'react-dom/client';
+import { App } from './App';
 import './index.css';
+import { Container } from '@material-ui/core';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <Container>
+      <App />
+    </Container>
   </React.StrictMode>
 );

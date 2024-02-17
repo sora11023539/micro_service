@@ -1,28 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { Tweet } from './Tweet';
+import { Avatar, Card, CardContent, CardHeader, Typography } from '@material-ui/core';
 
-interface Tweet {
-  id: number;
-  context: string;
+interface TweetListProps {
+  tweets: Tweet[];
 }
 
-export const TweetList: React.FC = () => {
-  const [tweets, setTweets] = useState<Tweet[]>([]);
-
-  useEffect(() => {
-    const fetchTweets = async () => {
-      const res = await axios.get<Tweet[]>(`${import.meta.env.VITE_TWEET_API_URL}/tweets/`);
-      setTweets(res.data);
-    };
-
-    fetchTweets();
-  }, []);
-
+export const TweetList: React.FC<TweetListProps> = ({ tweets }) => {
   return (
     <div>
-      {tweets.map((tweet) => (
-        <Tweet key={tweet.id} tweet={tweet} />
+      {tweets.map((tweet, index) => (
+        <Card key={index}>
+          <CardHeader avatar={<Avatar>U</Avatar>} title="Username" subheader="@User" />
+          <CardContent>
+            <Typography variant="body2">{tweet.context}</Typography>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

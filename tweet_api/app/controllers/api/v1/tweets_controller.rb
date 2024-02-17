@@ -10,7 +10,7 @@ class Api::V1::TweetsController < ApplicationController
   private
 
   def tweets
-    @tweets ||= Tweet.all
+    @tweets ||= Tweet.all.order(created_at: :desc)
   end
 
   def tweet_params

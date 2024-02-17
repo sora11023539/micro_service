@@ -15,7 +15,7 @@ class Api::V1::BooksController < ApplicationController
   end
 
   def fetch_books
-    books = Book.all.to_json
+    books = Book.all.order(created_at: :desc).to_json
     $redis.set('books', books)
     books
   end
