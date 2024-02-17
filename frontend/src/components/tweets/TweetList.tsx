@@ -4,8 +4,7 @@ import { Tweet } from './Tweet';
 
 interface Tweet {
   id: number;
-  title: string;
-  body: string;
+  context: string;
 }
 
 export const TweetList: React.FC = () => {

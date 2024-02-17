@@ -3,30 +3,26 @@ import axios from 'axios';
 import { TextField, Button } from '@material-ui/core';
 
 export const CreateTweet: React.FC = () => {
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+  const [context, setContext] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const tweet = {
-      title,
-      body,
+      context,
     };
 
     await axios.post(`${import.meta.env.VITE_TWEET_API_URL}/tweets/`, tweet);
 
-    setTitle('');
-    setBody('');
+    setContext('');
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <TextField value={title} onChange={(e) => setTitle(e.target.value)} label="Title" />
       <TextField
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        label="Body"
+        value={context}
+        onChange={(e) => setContext(e.target.value)}
+        label="context"
         multiline
         rows={4}
       />
