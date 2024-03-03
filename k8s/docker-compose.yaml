@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  k8s:
+    build:
+      context: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - ../:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: /bin/bash -c "echo $KUBECONFIG && /bin/bash"
+    environment:
+      - KUBECONFIG=./config

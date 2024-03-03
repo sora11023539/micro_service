@@ -1,0 +1,21 @@
+FROM node:20.11.1-slim as build-stage
+
+ARG VITE_BOOK_API_URL=http://book_api.sora-microservice.com:32382/api/v1 \
+  VITE_TWEET_API_URL=http://tweet_api.sora-microservice.com:32382/api/v1
+ENV VITE_BOOK_API_URL=$VITE_BOOK_API_URL \
+  VITE_TWEET_API_URL=$VITE_TWEET_API_URL
+
+WORKDIR /app
+
+COPY ./package*.json ./
+RUN npm i --force
+
+COPY . .
+RUN npm run build
+
+FROM nginx:1.24.0-alpine as deploy-stage
+
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+
+CMD ["nginx", "-g", "daemon off;"]

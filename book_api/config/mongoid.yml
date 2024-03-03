@@ -183,3 +183,18 @@ test:
         read:
           mode: :primary
         max_pool_size: 1
+
+production:
+  clients:
+    default:
+      database: <%= ENV['MONGO_INITDB_DATABASE'] %>
+      hosts:
+        - <%= ENV['MONGO_HOST'] %>:<%= ENV['MONGO_PORT'] %>
+      options:
+        read:
+          mode: :primary
+        max_pool_size: 1
+        user: <%= ENV['MONGO_INITDB_ROOT_USERNAME'] %>
+        password: <%= ENV['MONGO_INITDB_ROOT_PASSWORD'] %>
+        auth_mech: :scram
+        auth_source: admin

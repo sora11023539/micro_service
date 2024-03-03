@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-api-db
+  namespace: sora-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: book-api-db
+  template:
+    metadata:
+      labels:
+        app: book-api-db
+    spec:
+      containers:
+        - name: book-api-db
+          image: mongo:7.0-jammy
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 27017
+          envFrom:
+            - secretRef:
+                name: db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-api-db
+  namespace: sora-microservice
+spec:
+  selector:
+    app: book-api-db
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-api
+  namespace: sora-microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: book-api
+  template:
+    metadata:
+      labels:
+        app: book-api
+    spec:
+      containers:
+        - name: book-api
+          image: sora11023539/microservice:book_api
+          imagePullPolicy: Always
+          command: ["bash", "-c"]
+          args:
+            - rm -f tmp/pids/server.pid
+            - rails db:create RAILS_ENV=production
+            - bundle exec rails s -p 3000 -b '0.0.0.0' -e production
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: db
+            - secretRef:
+                name: book-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-api
+  namespace: sora-microservice
+spec:
+  selector:
+    app: book-api
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: book-api
+  namespace: sora-microservice
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: book-api.sora-microservice.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: book-api
+                port:
+                  number: 3000
+---
