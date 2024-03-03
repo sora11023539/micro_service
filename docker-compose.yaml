@@ -6,12 +6,6 @@ x-mongodb-env: &mongodb-env
   MONGO_INITDB_ROOT_USERNAME: root
   MONGO_INITDB_ROOT_PASSWORD: password
 
-x-mongo-express-image: &mongo-express-image
-  image: mongo-express:1.0.2-20
-x-mongo-express-env: &mongo-express-env
-  ME_CONFIG_MONGODB_ADMINUSERNAME: root
-  ME_CONFIG_MONGODB_ADMINPASSWORD: password
-
 services:
   frontend:
     build:
@@ -21,7 +15,7 @@ services:
       - ./frontend:/app
       - node_modules:/app/node_modules
     ports:
-      - "5173:5173"
+      - '5173:5173'
     environment:
       - VITE_BOOK_API_URL=http://localhost:3000/api/v1
       - VITE_TWEET_API_URL=http://localhost:3001/api/v1
@@ -29,23 +23,14 @@ services:
   redis:
     image: redis:7.2
     ports:
-      - "6379:6379"
-
-  redis-ui:
-    image: redislabs/redisinsight:1.14.0
-    ports:
-      - 8001:8001
-    volumes:
-      - redis_ui_db:/db
-    depends_on:
-      - redis
+      - '6379:6379'
 
   book_api:
     build:
       context: ./book_api
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - ./book_api:/app
       - book_bundle:/usr/local/bundle
@@ -59,21 +44,11 @@ services:
   book_db:
     <<: *mongodb-image
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - book_db:/data/db
     environment:
       <<: *mongodb-env
-
-  book_db_ui:
-    <<: *mongo-express-image
-    ports:
-      - "8081:8081"
-    environment:
-      <<: *mongo-express-env
-      ME_CONFIG_MONGODB_SERVER: book_db
-    depends_on:
-      - book_db
 
   tweet_api:
     build:
@@ -82,7 +57,7 @@ services:
     tty: true
     stdin_open: true
     ports:
-      - "3001:3001"
+      - '3001:3001'
     volumes:
       - ./tweet_api:/app
       - tweet_bundle:/usr/local/bundle
@@ -95,26 +70,14 @@ services:
     <<: *mongodb-image
     command: mongod --port 27018
     ports:
-      - "27018:27018"
+      - '27018:27018'
     volumes:
       - tweet_db:/data/db
     environment:
       <<: *mongodb-env
 
-  tweet_db_ui:
-    <<: *mongo-express-image
-    ports:
-      - "8082:8082"
-    environment:
-      <<: *mongo-express-env
-      ME_CONFIG_MONGODB_SERVER: tweet_db
-      ME_CONFIG_MONGODB_PORT: 27018
-    depends_on:
-      - tweet_db
-
 volumes:
   node_modules:
-  redis_ui_db:
   book_db:
   book_bundle:
   tweet_bundle:
