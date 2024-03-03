@@ -1,0 +1,15 @@
+FROM node:20.11.1-slim as build-stage
+
+ARG VITE_BOOK_API_URL=http://book_api.sora-microservice.svc.cluster.local:3000/api/v1 \
+  VITE_TWEET_API_URL=http://tweet_api.sora-microservice.svc.cluster.local:3001/api/v1
+ENV VITE_BOOK_API_URL=$VITE_BOOK_API_URL \
+  VITE_TWEET_API_URL=$VITE_TWEET_API_URL
+
+RUN mkdir -p /app
+WORKDIR /app
+
+RUN npm i --force
+
+FROM nginx:1.24.0-alpine as deploy-stage
+
+CMD ["nginx", "-g", "daemon off;"]
